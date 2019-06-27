@@ -12,17 +12,37 @@ public class EventTracker implements Tracker {
     }
 
     synchronized public static EventTracker getInstance() {
-        return null;
+
+        return INSTANCE;
+    }
+
+    @Override
+    public Map<String, Integer> tracker() {
+
+        return tracker;
     }
 
     synchronized public void push(String message) {
+        if(tracker.containsKey(message)){
+         Integer value = tracker.get(message);
+         tracker.replace(message, value, value+1);
+        }else
+            tracker.put(message, 1);
+
     }
 
     synchronized public Boolean has(String message) {
-        return null;
+        if(tracker.containsKey(message)&&tracker.get(message)>0)
+
+        return true;
+        else
+            return false;
     }
 
     synchronized public void handle(String message, EventHandler e) {
+        e.handle();
+        Integer value = tracker.get(message);
+        tracker.replace(message,value, value-1);
     }
 
     // Do not use this. This constructor is for tests only
